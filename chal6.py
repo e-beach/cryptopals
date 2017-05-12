@@ -1,5 +1,7 @@
 # Let KEYSIZE be the guessed length of the key; try values from 2 to (say) 40.
 from base64 import b64decode
+from chal3 import decrypt
+from chal3 import fitness as chal3fitness
 import bitstring
 
 def bits(string):
@@ -22,23 +24,26 @@ contents = b64decode(open('chal6-data.txt').read())
 def fitness(keysize):
     return hamming_distance(contents[0:keysize], contents[keysize:2*keysize]) / keysize
 
-KEYSIZE = min(range(2,41), key=fitness)
 
-blocks = [ [] for i in range(KEYSIZE) ]
-for i in range(KEYSIZE):
-    for blck in range(i, len(contents), KEYSIZE):
-        blocks[i].append(contents[blck])
+def show_candidates():
+    candidates = list(range(2,41))
+    candidates.sort(key=fitness)
+    for x in candidates:
+        print(x, solve(x)[0:20])
 
+def solve_candidates():
+    candidates = list(range(2,41))
+    candidates.sort(key = lambda x: chal3fitness(solve(x, contents[0:1000])))
+    print(solve(candidates[-1]))
 
+def solve(KEYSIZE, contents=contents):
+    blocks = [ [] for i in range(KEYSIZE) ]
+    for i in range(KEYSIZE):
+        for blck in range(i, len(contents), KEYSIZE):
+            # append a single byte to the block
+            blocks[i].append(contents[blck])
+    blocks = [ decrypt(x) for x in blocks ]
+    result = ''.join(blocks[x % KEYSIZE][x // KEYSIZE] for x in range(len(contents)))
+    return result
 
-# Write a function to compute the edit distance/Hamming distance between two strings. The Hamming distance is just the number of differing bits. The distance between:
-# this is a test
-# and
-# wokka wokka!!!
-# is 37. Make sure your code agrees before you proceed.
-# For each KEYSIZE, take the first KEYSIZE worth of bytes, and the second KEYSIZE worth of bytes, and find the edit distance between them. Normalize this result by dividing by KEYSIZE.
-# The KEYSIZE with the smallest normalized edit distance is probably the key. You could proceed perhaps with the smallest 2-3 KEYSIZE values. Or take 4 KEYSIZE blocks instead of 2 and average the distances.
-# Now that you probably know the KEYSIZE: break the ciphertext into blocks of KEYSIZE length.
-# Now transpose the blocks: make a block that is the first byte of every block, and a block that is the second byte of every block, and so on.
-# Solve each block as if it was single-character XOR. You already have code to do this.
-# For each block, the single-byte XOR key that produces the best looking histogram is the repeating-key XOR key byte for that block. Put them together and you have the key.
+solve_candidates()
