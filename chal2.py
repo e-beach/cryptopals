@@ -11,4 +11,3 @@ if __name__ == "__main__":
     s2 = from_hex(argv[2])
     xord = _xor(s1,s2)
     print(to_hex(xord))
-

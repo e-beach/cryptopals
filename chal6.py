@@ -1,49 +1,36 @@
-# Let KEYSIZE be the guessed length of the key; try values from 2 to (say) 40.
 from base64 import b64decode
-from chal3 import decrypt
-from chal3 import fitness as chal3fitness
-import bitstring
+import chal3
 
-def bits(string):
+def as_bytes(str_or_byte):
+    try:
+        return str_or_byte.encode('ascii')
+    except AttributeError:
+        return str_or_byte
+
+def bitstring(string):
     return ''.join(bin(c)[2:].zfill(8) for c in string)
 
 def hamming_distance(b1, b2):
     if len(b1) != len(b2):
         raise ValueError("string lengths must be equal")
-    try:
-        b1 = b1.encode('ascii')
-        b2 = b2.encode('ascii')
-    except AttributeError:
-        pass
-    return sum(x[0] != x[1] for x in zip(bits(b1), bits(b2)))
-
-assert hamming_distance("this is a test", "wokka wokka!!!") == 37
-
-contents = b64decode(open('chal6-data.txt').read())
+    b1 = as_bytes(b1)
+    b2 = as_bytes(b2)
+    return sum(x[0] != x[1] for x in zip(bitstring(b1), bitstring(b2)))
 
 def fitness(keysize):
-    return hamming_distance(contents[0:keysize], contents[keysize:2*keysize]) / keysize
+    return hamming_distance(content[0:keysize], content[keysize:2*keysize]) / keysize
 
-
-def show_candidates():
+def solve_with_best_keysize(content):
     candidates = list(range(2,41))
-    candidates.sort(key=fitness)
-    for x in candidates:
-        print(x, solve(x)[0:20])
+    candidates.sort(key = lambda x: chal3.fitness(solve(x, content[0:1000])))
+    return solve(candidates[-1], content)
 
-def solve_candidates():
-    candidates = list(range(2,41))
-    candidates.sort(key = lambda x: chal3fitness(solve(x, contents[0:1000])))
-    print(solve(candidates[-1]))
-
-def solve(KEYSIZE, contents=contents):
-    blocks = [ [] for i in range(KEYSIZE) ]
-    for i in range(KEYSIZE):
-        for blck in range(i, len(contents), KEYSIZE):
-            # append a single byte to the block
-            blocks[i].append(contents[blck])
-    blocks = [ decrypt(x) for x in blocks ]
-    result = ''.join(blocks[x % KEYSIZE][x // KEYSIZE] for x in range(len(contents)))
+def solve(keysize, content):
+    blocks = [ [ content[blck] for blck in range(i, len(content), keysize) ] for i in range(keysize) ]
+    blocks = [ chal3.decrypt(blck) for blck in blocks ]
+    result = ''.join(blocks[i % keysize][i // keysize] for i in range(len(content)))
     return result
 
-solve_candidates()
+if __name__ == "__main__":
+    content = b64decode(open('data/6.txt').read())
+    print(solve_with_best_keysize(content))

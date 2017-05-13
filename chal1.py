@@ -19,8 +19,6 @@ def to_hex(half_bytes):
     inv_map = {v: k for k, v in hex_dict.items()}
     return ''.join([inv_map[i] for i in half_bytes])
 
-
-
 def hex_to_b64(inputstr):
     half_bytes = [ hex_dict[c] for c in inputstr ]
     b64_encoded = []
