@@ -20,21 +20,19 @@ def rand_bool():
     random.seed()
     return random.randint(0, 1)
 
-def encryption_oracle(content, key=None):
+def encryption_oracle(content):
     global IS_EBC
-    if key is None:
-        key = randomkey()
     count_before = really_randint(5, 10)
     count_after = really_randint(5, 10)
     content = os.urandom(count_before) + content.encode('utf-8') + os.urandom(count_after)
     if rand_bool():
         print('Executing EBC...')
         IS_EBC = True
-        return EBC_encrypt(pad16(content), key)
+        return EBC_encrypt(pad16(content), key= randomkey())
     else:
         print('Executing CBC...')
         IS_EBC = False
-        return CBC_encrypt(pad16(content), iv=randomkey(), key)
+        return CBC_encrypt(pad16(content), iv=randomkey(), key= randomkey())
 
 def detect_EBC_or_CBC(encrypted_content):
     # This is going to work for all nonrandom data.

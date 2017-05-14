@@ -17,6 +17,7 @@ def pad16(string):
         offset = 0
     return pad(string, len(string) + offset)
 
+
 if __name__ == "__main__":
     padded = pad('YELLOW SUBMARINE', 20)
     print(get_bytes(padded))

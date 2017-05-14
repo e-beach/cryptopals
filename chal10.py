@@ -25,6 +25,10 @@ def CBC_decrypt(message, iv=IV, key=chal7.KEY):
         last = blck
     return decode_bytes(result)
 
+def pad_EBC_encrypt(message, key=chal7.KEY):
+    message = chal9.pad16(message)
+    return chal7.EBC_encrypt(message, key)
+
 if __name__ == "__main__":
     import requests
     from base64 import b64decode
