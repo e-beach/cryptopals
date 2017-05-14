@@ -4,7 +4,10 @@ import random
 
 from chal7 import EBC_encrypt
 from chal8 import chunks, countit
+from chal9 import pad16
 from chal10 import CBC_encrypt
+
+IS_EBC = False
 
 def really_randint(a, b):
     random.seed() # calls os.urandom
@@ -17,25 +20,37 @@ def rand_bool():
     random.seed()
     return random.randint(0, 1)
 
-def encryption_oracle(content):
+def encryption_oracle(content, key=None):
+    global IS_EBC
+    if key is None:
+        key = randomkey()
     count_before = really_randint(5, 10)
     count_after = really_randint(5, 10)
     content = os.urandom(count_before) + content.encode('utf-8') + os.urandom(count_after)
     if rand_bool():
-        return EBC_encrypt(content, key=randomkey())
+        print('Executing EBC...')
+        IS_EBC = True
+        return EBC_encrypt(pad16(content), key)
     else:
-        return CBC_encrypt(content, iv=randomkey(), key=randomkey())
+        print('Executing CBC...')
+        IS_EBC = False
+        return CBC_encrypt(pad16(content), iv=randomkey(), key)
 
 def detect_EBC_or_CBC(encrypted_content):
     # This is going to work for all nonrandom data.
     # From what I know, I know that this will do EBC or CBC
     # I can count the number of bytes
-    assert len(encrypted_content) >= 2048
-    encrypted_content = encrypted_content[:2048]
+    LENGTH = 2 ** 16
+    assert len(encrypted_content) >= LENGTH
+    encrypted_content = encrypted_content[:LENGTH]
     blocks = chunks(encrypted_content, 16)
-    if len(blocks) - len(set(blocks)) > 2:
+    if len(blocks) > len(set(blocks)):
+        if not IS_EBC:
+            return 'False positive'
         return "EBC"
     else:
+        if IS_EBC:
+            return 'False negative'
         return "CBC"
 
 if __name__ == "__main__":

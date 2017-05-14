@@ -1,12 +1,22 @@
 import struct
 
 def get_bytes(string):
-    return bytes(string.encode('ascii'))
+    return string.encode('ascii')
 
 def pad(string, length):
-    assert length < 0xFF
     count = length - len(string)
-    return string + chr(count) * count
+    assert 0 <= count <= 0xFF
+    if isinstance(string, bytes):
+        return string + bytes([count] * count)
+    else:
+        return string + chr(count) * count
 
-padded = pad('YELLOW SUBMARINE', 20)
-print(get_bytes(padded))
+def pad16(string):
+    offset = 16 - (len(string) % 16)
+    if offset == 16:
+        offset = 0
+    return pad(string, len(string) + offset)
+
+if __name__ == "__main__":
+    padded = pad('YELLOW SUBMARINE', 20)
+    print(get_bytes(padded))

@@ -6,13 +6,10 @@ import chal9
 IV = bytes([0] * 16)
 
 def decode_bytes(content):
-    return ''.join([b.decode('utf-8') for b in content])
+    return b''.join(content).decode('utf-8')
 
 def CBC_encrypt(message, iv=IV, key=chal7.KEY):
-    offset = 16 - (len(message) % 16)
-    if offset == 16:
-        offset = 0
-    # message = chal9.pad(message, length=offset)
+    message = chal9.pad16(message)
     result = []
     last = iv
     for blck in chal8.chunks(message, 16):
@@ -33,5 +30,4 @@ if __name__ == "__main__":
     from base64 import b64decode
     content = b64decode(requests.get('https://cryptopals.com/static/challenge-data/10.txt').text)
     assert CBC_encrypt(CBC_decrypt(content).encode('utf-8')) == content
-    print(CBC_decrypt(CBC_encrypt(CBC_decrypt(content).encode('utf-8'))))
     print(CBC_decrypt(content))
