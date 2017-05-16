@@ -8,6 +8,7 @@ from chal9 import pad16
 from chal10 import CBC_encrypt
 
 IS_EBC = False
+TEST = False
 
 def really_randint(a, b):
     random.seed() # calls os.urandom
@@ -22,6 +23,8 @@ def rand_bool():
 
 def encryption_oracle(content):
     global IS_EBC
+    global TEST
+    TEST = True
     count_before = really_randint(5, 10)
     count_after = really_randint(5, 10)
     content = os.urandom(count_before) + content.encode('utf-8') + os.urandom(count_after)
@@ -43,11 +46,11 @@ def detect_EBC_or_CBC(encrypted_content):
     encrypted_content = encrypted_content[:LENGTH]
     blocks = chunks(encrypted_content, 16)
     if len(blocks) > len(set(blocks)):
-        if not IS_EBC:
+        if TEST and not IS_EBC:
             return 'False positive'
         return "EBC"
     else:
-        if IS_EBC:
+        if TEST and IS_EBC:
             return 'False negative'
         return "CBC"
 

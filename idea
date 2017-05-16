@@ -1,0 +1,6 @@
+if the text is "Jesus is fairer, Jesus is purer, he makes our sorrowing spirits sing."
+then the result is
+1) Use the correct loop to get "Jesus is fairer, "
+make the payload be  "Jesus is fairer, " + "A" * 15 + 0-255
+and check the value for every character.
+Then check what value is actually there.
