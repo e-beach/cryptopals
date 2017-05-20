@@ -16,18 +16,21 @@ def really_randint(a, b):
 
 def randomkey():
     return os.urandom(16)
+RANDKEY = randomkey()
 
 def rand_bool():
     random.seed()
     return random.randint(0, 1)
 
+def rand_bytes(begin, end):
+    count = really_randint(begin, end)
+    return os.urandom(count)
+
 def encryption_oracle(content):
     global IS_EBC
     global TEST
     TEST = True
-    count_before = really_randint(5, 10)
-    count_after = really_randint(5, 10)
-    content = os.urandom(count_before) + content.encode('utf-8') + os.urandom(count_after)
+    content = rand_bytes(5,10) + content.encode('utf-8') + rand_bytes(5, 10)
     if rand_bool():
         print('Executing EBC...')
         IS_EBC = True
