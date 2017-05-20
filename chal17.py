@@ -1,6 +1,9 @@
 import cryptopals as c
+from copy import copy
 
-def block(encrypted, n, blocksize=16):
+def block(encrypted, n=-1, blocksize=16):
+    if n == -1:
+        return encrypted[ -blocksize : ]
     return encrypted[blocksize*n: blocksize*(n+1)]
 
 def blocks(encrypted, n, m, blocksize=16):
@@ -21,40 +24,58 @@ MDAwMDA5aXRoIG15IHJhZy10b3AgZG93biBzbyBteSBoYWlyIGNhbiBibG93""".split('\n') ]
 def cookie(string):
     return ( c.CBC_encrypt(string, key=c.RANDKEY),  c.IV )
 
+def decrypt(cookie):
+    return c.CBC_decrypt(cookie, key=c.RANDKEY)
+
 
 def check(cookie):
     try:
-        c.remove_padding(c.CBC_decrypt(cookie))
+        c.remove_padding(decrypt(cookie))
     except ValueError:
         return False
     return True
 
 
 s = strings[c.randint(0,9)]
-cooki, IV = cookie(s)
-cooki = list(bytearray(cooki))
+token, IV = cookie(s)
+token = IV + token
+token = list(bytearray(token))
 
-decoded = []
-for i in reversed(range(len(cooki) - 16, len(cooki))):
-    target = len(cooki) - i
-    cooki[i + 1 :] = c.strxor(reversed(decoded), [ target ] * len(decoded) )
-    for char in range(1, 255):
-        cooki[i] ^= char
-        if check(bytes(cooki)):
-            cooki[i] ^= char
-            decoded.append(char ^ target)
+result = []
+
+for i in range(len(token) // 16 - 1):
+    print("length", len(token))
+
+    decoded = []
+    prepend = lambda x: decoded.insert(0, x)
+
+    for i in range(1, 255):
+        prev = token[-1 -16]
+        token[-1 -16] ^= i
+        if check(bytes(token)): # i ^ message[-1] = 1
+            prepend(i ^ 1)
+            token[-1 -16] = prev
             break
-        cooki[i] ^= char
+        token[-1 -16] = prev
     else:
-        raise ValueError("Can Never Happen")
-decoded = c.strxor(reversed(decoded), block(cooki, -2))
-print(bytes(decoded).decode('utf-8'))
+        prepend(1)
 
-# for each block
-    # decode the block using xor magic
-    # now we know what the block looks like after it was xored with the previous encrypted block
-    # xor newly decrypted block with previous encrypted block to get real real value
+    for b in range(2, 17):
+        tok = copy(token)
+        for k in range(1, b):
+            tok[-k-16] ^= decoded[-k] ^ b
+        for i in range(255):
+            tok[-b -16] ^= i
+            if check(bytes(tok)):
+                prepend(i ^ b)
+                break
+            tok[-b -16] ^= i
 
+    token = token[ : -16 ]
+    print(bytes(decoded))
+    result = decoded + result
+
+print(bytes(result))
 
 
 

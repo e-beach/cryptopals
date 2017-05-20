@@ -13,8 +13,6 @@ def pad(string, length):
 
 def pad16(string):
     offset = 16 - (len(string) % 16)
-    if offset == 16:
-        offset = 0
     return pad(string, len(string) + offset)
 
 
