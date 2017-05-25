@@ -1,6 +1,8 @@
 from base64 import b64decode
 from Crypto.Cipher import AES
 
+
+
 KEY = b'YELLOW SUBMARINE'
 
 def EBC_decrypt(content, key=KEY):
