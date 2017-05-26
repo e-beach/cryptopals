@@ -2,9 +2,10 @@ import cryptopals as c
 from struct import pack
 
 def CTR(text):
+    # limit to 2 ** 32 bytes transfereed
     return b''.join(
             c.strxor(
-                c.pad_EBC_encrypt(pack("<l", 0) + pack("<l", i)), 
+                c.EBC_encrypt(b'\x00' * 8 + pack("<l", i) + b'\x00' * 4), 
                 block) 
             for i, block in enumerate(c.chunks(text)))
 
