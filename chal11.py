@@ -16,7 +16,7 @@ def really_randint(a, b):
 
 def randomkey():
     return os.urandom(16)
-RANDKEY = randomkey()
+RAND_KEY = randomkey()
 
 def rand_bool():
     random.seed()

@@ -28,7 +28,7 @@ def solve_with_best_keysize(content):
 def solve(keysize, content):
     blocks = [ [ content[blck] for blck in range(i, len(content), keysize) ] for i in range(keysize) ]
     blocks = [ chal3.decrypt(blck) for blck in blocks ]
-    result = ''.join(blocks[i % keysize][i // keysize] for i in range(len(content)))
+    result = ''.join(chr(blocks[i % keysize][i // keysize]) for i in range(len(content)))
     return result
 
 if __name__ == "__main__":

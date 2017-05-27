@@ -7,6 +7,8 @@ def fitness(string):
         string = string.decode('utf-8')
     except UnicodeDecodeError:
         return -1
+    except AttributeError:
+        pass
     return sum( freqs[c] for c in string.lower() if c in freqs)
 
 def strxor(a, b):

@@ -15,10 +15,10 @@ MDAwMDA5aXRoIG15IHJhZy10b3AgZG93biBzbyBteSBoYWlyIGNhbiBibG93"""
 strings = [ c.b64decode(s) for s in text.split('\n') ]
 
 def cookie(string):
-    return ( c.CBC_encrypt(string, key=c.RANDKEY),  c.IV )
+    return (c.CBC_encrypt(string, key=c.RAND_KEY), c.IV)
 
 def decrypt(cookie):
-    return c.CBC_decrypt(cookie, key=c.RANDKEY)
+    return c.CBC_decrypt(cookie, key=c.RAND_KEY)
 
 def check(cookie):
     try:

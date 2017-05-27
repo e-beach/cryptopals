@@ -7,8 +7,6 @@ def unhex_data(data):
 
 def chunks(stuff, n=16):
     result = [stuff[i:i+n] for i in range(0, len(stuff), n)]
-    # if isinstance(stuff, bytes):
-    #     return bytes(result) # this doesn't make any sense
     return result
 
 def countit(line):
