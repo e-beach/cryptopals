@@ -1,5 +1,4 @@
 import cryptopals
-import chal21
 
 _NONE = {}
 def disp(m, x = _NONE):
@@ -60,7 +59,8 @@ def twister_reverser(w, n, m, r, u, s, t, l, d, b, c, a, f):
 
     return Reverser
 
-Reverser = chal21.call_with_MT19937_params(twister_reverser)
+Reverser = twister_reverser(**cryptopals.MT_19937_params)
+n = cryptopals.MT_19937_params["n"]
 
 def copy_twister(twister):
     MT = [ Reverser.reverse(twister.extract_number()) for i in range(n) ]
@@ -69,31 +69,8 @@ def copy_twister(twister):
     twister_clone._twist()
     return twister_clone
 
-
 if __name__ == "__main__":
-    l = 18
-    n = 624
-
-    mask = 10
-    y = int('c' + 'a' * 6 + 'b', 16)
-    disp('y', y)
-    y2 = y ^ ( (y >> l) &  mask)
-    disp('y2', y2)
-    disp('reversed', Reverser.undo_xor_with_self_right_shifted(y2, l, arg_mask=mask))
-
-    mask <<= l
-    y3 = y ^ ( (y << l) & mask)
-    disp('y3', y3)
-    disp('reversed', Reverser.undo_xor_with_self_left_shifted(y3, l, arg_mask=mask))
-
-    twister = cryptopals.MersenneTwister(1)
-    y = twister.extract_number()
-    a0 = Reverser.reverse(y)
-    disp(y)
-    disp(a0)
-    disp(twister.MT[0])
-
-    twister =
-
-
-
+    twister1 = cryptopals.MersenneTwister(cryptopals.randint(0, 2 ** 30))
+    twister2 = copy_twister(twister1)
+    print(twister1.extract_number())
+    print(twister2.extract_number())

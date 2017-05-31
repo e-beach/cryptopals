@@ -58,25 +58,24 @@ def twister(seed):
         f = 6364136223846793005 if wordsize == 64 else 1812433253
         )(seed)
 
-def call_with_MT19937_params(func):
-    return func(
-            w=32,
-            n=624,
-            m=397,
-            r=31,
-            a=0x9908b0df,
-            u=11,
-            d=0xffffffff,
-            s=7,
-            b=0x9d2c5680,
-            t=15,
-            c=0xefc60000,
-            l=18,
-            f=1812433253,
-    )
+MT_19937_params = {
+            "w":32,
+            "n":624,
+            "m":397,
+            "r":31,
+            "a":0x9908b0df,
+            "u":11,
+            "d":0xffffffff,
+            "s":7,
+            "b":0x9d2c5680,
+            "t":15,
+            "c":0xefc60000,
+            "l":18,
+            "f":1812433253,
+}
 
 def MT19937(seed):
-    return call_with_MT19937_params(mersenne_twister)(seed)
+    return mersenne_twister(**MT_19937_params)(seed)
 
 if __name__ == "__main__":
     twist = twister(100)

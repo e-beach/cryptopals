@@ -14,4 +14,4 @@ from chal11 import RAND_KEY
 from chal12 import byte
 from chal15 import remove_padding
 from chal18 import CTR_Encrypt
-from chal21 import MT19937 as MersenneTwister
+from chal21 import MT_19937_params, MT19937 as MersenneTwister
