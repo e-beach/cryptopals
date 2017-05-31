@@ -1,14 +1,5 @@
 import cryptopals
 
-_NONE = {}
-def disp(m, x = _NONE):
-    if x is _NONE:
-        x = m
-        val = hex(x).zfill(8)
-    else:
-        val = m + " " + "0x" + hex(x)[2:].zfill(8)
-    print(val.rjust(20))
-
 def twister_reverser(w, n, m, r, u, s, t, l, d, b, c, a, f):
 
     class Reverser:
