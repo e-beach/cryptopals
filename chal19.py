@@ -42,28 +42,23 @@ SGUsIHRvbywgaGFzIGJlZW4gY2hhbmdlZCBpbiBoaXMgdHVybiw=
 VHJhbnNmb3JtZWQgdXR0ZXJseTo=
 QSB0ZXJyaWJsZSBiZWF1dHkgaXMgYm9ybi4=
 """
-lines = [ c.CTR_Encrypt(c.b64decode(s)) for s in text.split('\n')[1:-1] ]
-c.RAND_KEY = '\x00' # cryptopals ate the key
-
-def score(char, idx):
-    x = sum(
-        c.character_frequencies.get(
-            chr(l[idx] ^ char), 0)
-        for l in lines if idx < len(l))
-    print(x)
-    return x
-
-def best(idx):
-    return max(range(256), key=lambda char: score(char, idx))
 
 def solve_keystream(lines):
-    return bytearray(map(best, range(max(map(len, lines)))))
+    def best_char_for(index):
+        def score(char):
+            return sum(
+                c.character_frequencies.get(
+                    chr(line[index] ^ char), 0)
+                for line in lines if index < len(line))
+        return max(range(256), key=score)
+    return bytearray(map(best_char_for, range(max(map(len, lines)))))
 
 def solve(lines, keystream):
     for l in lines:
         print(c.strxor(l, keystream))
 
 if __name__ == "__main__":
+    lines = [c.CTR_Encrypt(c.b64decode(s)) for s in text.split('\n')[1:-1]]
     keystream = solve_keystream(lines)
     incorrect_idx = len(lines[0]) - 1
     keystream[incorrect_idx] ^= (ord('u') ^ ord('y'))

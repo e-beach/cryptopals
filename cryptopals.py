@@ -1,5 +1,4 @@
 from base64 import b64decode, b64encode
-
 from pprint import pprint
 
 KEY = b'YELLOW SUBMARINE'
@@ -15,3 +14,4 @@ from chal11 import RAND_KEY
 from chal12 import byte
 from chal15 import remove_padding
 from chal18 import CTR_Encrypt
+from chal21 import MT19937 as MersenneTwister
