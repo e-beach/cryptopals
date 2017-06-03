@@ -1,8 +1,6 @@
 import cryptopals as c
 from functools import partial
 
-PRACTICE_MESSAGE = b"I'm actually really horny right now."
-
 def round_down(x):
     return x - x % 16
 
@@ -25,20 +23,11 @@ def edit(ciphertext, key, offset, newtext):
     copy[begin:end] = encrypt(edited)
     return bytes(copy)
 
-def test():
-    decrypt = encrypt = partial(c.CTR_Encrypt, key=c.RAND_KEY)
-    plaintext = PRACTICE_MESSAGE
-    ciphertext = bytearray(encrypt(plaintext))
-    edit(ciphertext, c.RAND_KEY, plaintext.index(b"horny"), b"high!")
-    print(decrypt(ciphertext))
-
-
 def breakit(edit, ciphertext):
 
     def get_char_at(idx):
         for char in c.all_chars():
-            cp = edit(ciphertext, offset=idx, newtext=char)
-            if cp == ciphertext:
+            if edit(ciphertext, offset=idx, newtext=char) == ciphertext:
                 return char
         raise ValueError("Couldn't break it!")
 
