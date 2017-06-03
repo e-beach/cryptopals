@@ -39,7 +39,6 @@ def breakit(edit, ciphertext):
         for char in c.all_chars():
             cp = edit(ciphertext, offset=idx, newtext=char)
             if cp == ciphertext:
-                print(char)
                 return char
         raise ValueError("Couldn't break it!")
 
@@ -51,6 +50,6 @@ if __name__ == "__main__":
     decrypt = encrypt = partial(c.CTR_Encrypt, key=c.RAND_KEY)
     text = c.ECB_decrypt(c.b64decode(open('data/25.txt').read()))
     print(text)
-    ciphertext = encrypt(PRACTICE_MESSAGE)
+    ciphertext = encrypt(text)
     print(breakit(edit, ciphertext))
 

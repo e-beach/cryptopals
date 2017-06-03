@@ -1,6 +1,6 @@
 from Crypto.Cipher import AES
 
-SUBMARINE_KEY="abc"
+SUBMARINE_KEY="YELLOW SUBMARINE"
 
 def ECB_decrypt(content, key=SUBMARINE_KEY):
     return AES.new(key, AES.MODE_ECB).decrypt(content)
