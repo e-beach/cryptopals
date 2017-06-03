@@ -15,7 +15,7 @@ MDAwMDA5aXRoIG15IHJhZy10b3AgZG93biBzbyBteSBoYWlyIGNhbiBibG93"""
 strings = [ c.b64decode(s) for s in text.split('\n') ]
 
 def cookie(string):
-    return (c.CBC_encrypt(string, key=c.RAND_KEY), c.IV)
+    return (c.pad_CBC_encrypt(string, key=c.RAND_KEY), c.IV)
 
 def decrypt(cookie):
     return c.CBC_decrypt(cookie, key=c.RAND_KEY)
@@ -29,7 +29,7 @@ def check(cookie):
 
 if __name__ == "__main__":
 
-    s = strings[c.randint(0,9)]
+    s = strings[c.rand_int(0, 9)]
     print(s)
 
     token, IV = cookie(s)

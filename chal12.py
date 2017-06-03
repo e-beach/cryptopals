@@ -1,5 +1,5 @@
 from chal6 import as_bytes
-from chal10 import pad_EBC_encrypt
+from chal10 import pad_ECB_encrypt
 from chal11 import randomkey, detect_EBC_or_CBC
 from base64 import b64decode
 
@@ -7,7 +7,7 @@ KEY = randomkey()
 SUFFIX = 'Um9sbGluJyBpbiBteSA1LjAKV2l0aCBteSByYWctdG9wIGRvd24gc28gbXkgaGFpciBjYW4gYmxvdwpUaGUgZ2lybGllcyBvbiBzdGFuZGJ5IHdhdmluZyBqdXN0IHRvIHNheSBoaQpEaWQgeW91IHN0b3A/IE5vLCBJIGp1c3QgZHJvdmUgYnkK'
 
 def oracle(content):
-    return pad_EBC_encrypt(content + b64decode(SUFFIX), KEY)
+    return pad_ECB_encrypt(content + b64decode(SUFFIX), KEY)
 
 def byte(x):
     return bytes([x])

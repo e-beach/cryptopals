@@ -1,11 +1,11 @@
-from chal10 import CBC_encrypt, CBC_decrypt
+from chal10 import pad_CBC_encrypt, CBC_decrypt
 from chal15 import remove_padding
 from chal9 import pad16
 
 def dummy_padding(string):
     return "a" * (len(pad16(string)) - len(string))
 
-encrypt = CBC_encrypt
+encrypt = pad_CBC_encrypt
 decrypt = lambda text: remove_padding(CBC_decrypt(text))
 
 prefix = "comment1=cooking%20MCs;userdata="
@@ -17,11 +17,12 @@ def cookie(text):
 def is_admin(cookie):
     return b";admin=true" in remove_padding(decrypt(cookie))
 
-bits = dummy_padding(prefix) + ":admin<true"
-to_alter1 = len(prefix) + bits.index('<') - 16
-to_alter2 = len(prefix) + bits.index(':') - 16
-c = bytearray(cookie(bits))
-c[to_alter1] ^= 1
-c[to_alter2] ^= 1
-print(CBC_decrypt(bytes(c)))
-print(is_admin(bytes(c)))
+if __name__ == "__main__":
+    bits = dummy_padding(prefix) + ":admin<true"
+    to_alter1 = len(prefix) + bits.index('<') - 16
+    to_alter2 = len(prefix) + bits.index(':') - 16
+    c = bytearray(cookie(bits))
+    c[to_alter1] ^= 1
+    c[to_alter2] ^= 1
+    print(CBC_decrypt(bytes(c)))
+    print(is_admin(bytes(c)))

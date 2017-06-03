@@ -5,7 +5,7 @@ def as_bytes(str_or_byte):
     try:
         return str_or_byte.encode('ascii')
     except AttributeError:
-        return str_or_byte
+        return bytes(str_or_byte)
 
 def bitstring(string):
     return ''.join(bin(c)[2:].zfill(8) for c in string)

@@ -2,10 +2,10 @@ import os
 import io
 import random
 
-from chal7 import EBC_encrypt
+from chal7 import ECB_encrypt
 from chal8 import chunks, countit
 from chal9 import pad16
-from chal10 import CBC_encrypt
+from chal10 import pad_CBC_encrypt
 
 IS_EBC = False
 TEST = False
@@ -34,11 +34,11 @@ def encryption_oracle(content):
     if rand_bool():
         print('Executing EBC...')
         IS_EBC = True
-        return EBC_encrypt(pad16(content), key= randomkey())
+        return ECB_encrypt(pad16(content), key= randomkey())
     else:
         print('Executing CBC...')
         IS_EBC = False
-        return CBC_encrypt(pad16(content), iv=randomkey(), key= randomkey())
+        return pad_CBC_encrypt(pad16(content), iv=randomkey(), key= randomkey())
 
 def detect_EBC_or_CBC(encrypted_content):
     # This is going to work for all nonrandom data.

@@ -1,17 +1,14 @@
-from base64 import b64decode
 from Crypto.Cipher import AES
 
+SUBMARINE_KEY="abc"
 
-
-KEY = b'YELLOW SUBMARINE'
-
-def EBC_decrypt(content, key=KEY):
+def ECB_decrypt(content, key=SUBMARINE_KEY):
     return AES.new(key, AES.MODE_ECB).decrypt(content)
 
-def EBC_encrypt(content, key=KEY):
+def ECB_encrypt(content, key=SUBMARINE_KEY):
     return AES.new(key, AES.MODE_ECB).encrypt(content)
 
 if __name__ == "__main__":
-    content = b64decode(open('data/7.txt').read())
-    assert EBC_encrypt(EBC_decrypt(content)) == content
-    print(EBC_decrypt(content))
+    content = c.b64decode(open('data/7.txt').read())
+    assert ECB_encrypt(ECB_decrypt(content)) == content
+    print(ECB_decrypt(content))

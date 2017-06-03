@@ -12,9 +12,9 @@ class Clock:
 clock = Clock()
 
 def run():
-    clock.sleep(c.randint(40, 1000))
+    clock.sleep(c.rand_int(40, 1000))
     rng = c.MersenneTwister(clock.time)
-    clock.sleep(c.randint(40, 1000))
+    clock.sleep(c.rand_int(40, 1000))
     return rng.extract_number()
 
 def crackit():

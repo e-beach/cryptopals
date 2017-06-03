@@ -1,7 +1,6 @@
 import struct
 
-
-def mersenne_twister( w, n, m, r, u,s,t,l,d,b,c, a, f): 
+def mersenne_twister_factory(w, n, m, r, u, s, t, l, d, b, c, a, f):
     lowest_w = (1 << w) - 1
     lower_mask =  ( 1 << r ) - 1
     upper_mask =  lowest_w & ~lower_mask
@@ -28,6 +27,10 @@ def mersenne_twister( w, n, m, r, u,s,t,l,d,b,c, a, f):
             self.index += 1
             return lowest_w & y
 
+        def uint32(self):
+            assert w == 32
+            return struct.pack('I', self.extract_number())
+
         def _twist(self):
             MT = self.MT
             for i in range(n):
@@ -42,7 +45,7 @@ def mersenne_twister( w, n, m, r, u,s,t,l,d,b,c, a, f):
 
 def twister(seed):
     wordsize = struct.calcsize('l') * 8
-    return mersenne_twister(
+    return mersenne_twister_factory(
         w= wordsize,
         n = 1000,
         m = 201,
@@ -75,7 +78,7 @@ MT_19937_params = {
 }
 
 def MT19937(seed):
-    return mersenne_twister(**MT_19937_params)(seed)
+    return mersenne_twister_factory(**MT_19937_params)(seed)
 
 if __name__ == "__main__":
     twist = twister(100)

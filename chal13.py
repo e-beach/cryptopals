@@ -1,16 +1,16 @@
-from chal7 import EBC_decrypt
+from chal7 import ECB_decrypt
 from chal9 import pad16
-from chal10 import pad_EBC_encrypt
+from chal10 import pad_ECB_encrypt
 from chal11 import RAND_KEY
 
 uid = -1
 
 def encrypt(data):
     """encrypt data under random key, with padding"""
-    return pad_EBC_encrypt(data, RAND_KEY)
+    return pad_ECB_encrypt(data, RAND_KEY)
 
 def decrypt(data):
-    return EBC_decrypt(data, RAND_KEY)
+    return ECB_decrypt(data, RAND_KEY)
 
 def parse_qstring(qstring):
     return  { kv[0]:kv[1] for kv in [ term.split('=') for term in qstring.split('&') ] }
