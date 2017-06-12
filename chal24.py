@@ -4,7 +4,7 @@ import time
 def MT_19377_encrypt(content, seed):
     twister = c.MersenneTwister(seed)
     return b''.join(
-        c.strxor(twister.uint32(), chunk) for chunk in c.chunks(content, 4)
+        c.strxor(twister.uint32(), chunk) for chunk in c.blocks(content, 4)
     )
 
 def prefix(content):

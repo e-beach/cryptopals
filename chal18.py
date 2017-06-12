@@ -11,7 +11,7 @@ def CTR_Encrypt(text, key=c.RAND_KEY, offset=0):
                     b'\x00' * 8 + pack("<l", i + start_block) + b'\x00' * 4,
                     key=key),
                 block)
-            for i, block in enumerate(c.chunks(text)))
+            for i, block in enumerate(c.blocks(text)))
 
 if __name__ == "__main__":
     print(CTR_Encrypt(c.b64decode('L77na/nrFsKvynd6HzOoG7GHTLXsTVu9qvY/2syLXzhPweyyMTJULu/6/kXX0KSvoOLSFQ=='), key=c.SUBMARINE_KEY))

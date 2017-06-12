@@ -3,7 +3,7 @@ import chal3
 
 def as_bytes(str_or_byte):
     try:
-        return str_or_byte.encode('ascii')
+        return str_or_byte.encode('latin-1')
     except AttributeError:
         return bytes(str_or_byte)
 

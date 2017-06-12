@@ -3,9 +3,9 @@ import io
 import random
 
 from chal7 import ECB_encrypt
-from chal8 import chunks, countit
+from chal8 import blocks, countit
 from chal9 import pad16
-from chal10 import pad_CBC_encrypt
+from chal10 import CBC_encrypt
 
 IS_EBC = False
 TEST = False
@@ -47,7 +47,7 @@ def detect_EBC_or_CBC(encrypted_content):
     LENGTH = 2 ** 16
     assert len(encrypted_content) >= LENGTH
     encrypted_content = encrypted_content[:LENGTH]
-    blocks = chunks(encrypted_content, 16)
+    blocks = blocks(encrypted_content, 16)
     if len(blocks) > len(set(blocks)):
         if TEST and not IS_EBC:
             return 'False positive'
