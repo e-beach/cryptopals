@@ -9,6 +9,7 @@ def ECB_encrypt(content, key=SUBMARINE_KEY):
     return AES.new(key, AES.MODE_ECB).encrypt(content)
 
 if __name__ == "__main__":
+    import cryptopals as c
     content = c.b64decode(open('data/7.txt').read())
     assert ECB_encrypt(ECB_decrypt(content)) == content
     print(ECB_decrypt(content))

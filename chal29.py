@@ -4,6 +4,7 @@ from chal28 import EncryptionOracle
 KEY = c.SUBMARINE_KEY
 oracle = EncryptionOracle(key=KEY)
 
+
 def glue_padding(message):
 
     message_byte_length = len(message)
@@ -17,6 +18,7 @@ def glue_padding(message):
 
     return message
 
+
 def forge_mac(original_mac, payload):
     hashObj = c.Sha1Hash()
     # duplicate the state of the secret hash with the MAC
@@ -25,6 +27,7 @@ def forge_mac(original_mac, payload):
     print(hashObj._h)
     return hashObj.update(payload).digest() # this is SHA-1(key || msg || glue || payload),
                                             # so forged_msg must be (msg || glue || payload)
+
 
 def test():
     # In the future, you REALLY should check everything bit by bit each step of the way.
@@ -43,7 +46,7 @@ def test():
     # print(c.Sha1Hash().update(message + glue_padding(message)).digest()) # padded twice
 
 
-def breakit(mac, plaintext, payload):
+def breakIt(mac, plaintext, payload):
     # key length should be 0-255 bytes
     #  for length in range(255):
     length = 16
@@ -54,6 +57,18 @@ def breakit(mac, plaintext, payload):
         return forged_mac, forged_plaintext
     raise ValueError("Couldn't break it")
 
+def trulySmashIt(mac, plaintext, payload):
+    evilMessage = plaintext + glue_padding(KEY + plaintext) + payload
+    bootleggedMac = forge_mac(mac, payload)
+    result = evilMessage, bootleggedMac
+    if oracle.verify(*result):
+        return result
+    else:
+        return False
+
+def actual_glue_padding(mac):
+    # calculate the real glue padding by idk...
+
 if __name__ == "__main__":
 
     # server
@@ -61,7 +76,7 @@ if __name__ == "__main__":
     mac = oracle.sign(plaintext)
 
     # attacker
-    breakit(mac, plaintext, payload=b";admin=true")
+    print(trulySmashIt(mac, plaintext, payload=b";admin=true"))
 
     # plaintext = c.RAND_KEY + b'asdf'
 
